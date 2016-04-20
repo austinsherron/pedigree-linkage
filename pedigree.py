@@ -20,6 +20,7 @@ class Pedigree:
 			pedigree = self.pedigree
 
 		for p,cs in pedigree.items():
+			cs = cs['ps']
 			frm = cs[0] if len(cs) > 0 else ''
 			for c in cs[1:]:
 				frm += ' + ' + str(c)
@@ -44,13 +45,13 @@ class Pedigree:
 		inverted_ped = defaultdict(dict)
 
 		for r in self._file_iter(file):
-			pedigree[r[0]] = []
+			pedigree[r[0]] = {'cs': [], 'sex': r[3].lower()}
 
 			if int(r[1]) != 0:
-				pedigree[r[1]].append(r[0])
+				pedigree[r[1]]['cs'].append(r[0])
 
 			if int(r[2]) != 0:
-				pedigree[r[2]].append(r[0])
+				pedigree[r[2]]['cs'].append(r[0])
 
 			inverted_ped[r[0]] = {'s': r[1],'d': r[2]}
 
@@ -72,11 +73,11 @@ class Pedigree:
 
 		G = nx.DiGraph()
 
-		for p,ans in pedigree.items():
+		for p,cs in pedigree.items():
 			G.add_node(p)
 
-			for an in ans:
-				G.add_edge(an, p)
+			for c in cs['cs']:
+				G.add_edge(p, c)
 
 		pos = nx.draw_spectral(G)
 		nx.draw(G, pos)
