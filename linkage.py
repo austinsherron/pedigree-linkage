@@ -2,8 +2,7 @@ import numpy as np
 import sys
 
 from pedigree import Pedigree
-from networkx import adjacency_matrix,topological_sort,DiGraph,Graph
-from networkx import enumerate_all_cliques,find_cliques,graph_number_of_cliques
+from networkx import DiGraph,Graph
 
 
 """
@@ -16,9 +15,7 @@ probably be more general.
 class Linkage(Pedigree):
 
     def __init__(self, mrk_file=None, ped_file=None, *args):
-        self.allele_types = set()
-
-        if ped_file:
+        if ped_file and mrk_file:
             Pedigree.__init__(self, ped_file)
         else:
             raise ValueError('Linkage.__init__: Linkage object requires a pedigree')
@@ -26,10 +23,15 @@ class Linkage(Pedigree):
         if len(args) <= 0:
             args = [1,2]
 
+        self.allele_types = set()
+
         if mrk_file:
             self.build_allele_assignments(mrk_file, *args)
             self.build_allele_network()
             self.build_allele_graph()
+            self.triangulate()
+
+        self.allele_types = sorted(self.allele_types)
 
 
     def print_allele_network(self, allele_network=None, sorting=lambda x: x):
@@ -68,117 +70,51 @@ class Linkage(Pedigree):
 
         self.allele_assigns = allele_assigns
         return allele_assigns
-        
-
-    def get_alleles(self, r, *args):
-        return tuple(r[i] for i in args)
-
-
-    def mk_nd(x, w):
-        return str(x) + '_' + str(w)
-        
-        
-    def index(x): 
-        return (int(x[:-2]) * 2 + (0 if x[-1] == 'd' else 1)) - 1
 
         
-    def build_allele_graph(self, trace=False):
+    def build_allele_graph(self):
         G = DiGraph()
-        mk_nd = Linkage.mk_nd
 
         for k,v in self.allele_network.items():
-            G.add_node(mk_nd(k, 'd'))
-            G.add_node(mk_nd(k, 's'))
+            G.add_node(self.mk_nd(k, 'd'))
+            G.add_node(self.mk_nd(k, 's'))
 
         for k,v in self.allele_network.items():
             for c in v['cs']:
                 if v['sex'] == 'm':
-                    G.add_edge(mk_nd(k, 'd'), mk_nd(c, 's'))
-                    G.add_edge(mk_nd(k, 's'), mk_nd(c, 's'))
-                    if trace:
-                        print(k + '_d', '->', c + '_s')
-                        print(k + '_s', '->', c + '_s')
+                    G.add_edge(self.mk_nd(k, 'd'), self.mk_nd(c, 's'))
+                    G.add_edge(self.mk_nd(k, 's'), self.mk_nd(c, 's'))
                 else:
-                    G.add_edge(mk_nd(k, 'd'), mk_nd(c, 'd'))
-                    G.add_edge(mk_nd(k, 's'), mk_nd(c, 'd'))
-                    if trace:
-                        print(k + '_d', '->', c + '_d')
-                        print(k + '_s', '->', c + '_d')
+                    G.add_edge(self.mk_nd(k, 'd'), self.mk_nd(c, 'd'))
+                    G.add_edge(self.mk_nd(k, 's'), self.mk_nd(c, 'd'))
 
         self.allele_graph = G
         return G
 
 
     def triangulate(self):
-        mk_nd = Linkage.mk_nd
         self.tri_graph = self.allele_graph.to_undirected()
         for i in self.pedigree:
-            self.tri_graph.add_edge(mk_nd(i, 's'), mk_nd(i, 'd'))
+            self.tri_graph.add_edge(self.mk_nd(i, 's'), self.mk_nd(i, 'd'))
+
+        return self.tri_graph
+        
+
+    def get_alleles(self, r, *args):
+        return tuple(r[i] for i in args)
 
 
-    def write_UAI(self):
-        """
-        NOTE: it's assumed that valid cliques are of size 3
-        """
-        G = self.allele_graph
-
-        print('MARKOV')
-        print(len(self.allele_graph))
-        print(' '.join([str(len(self.allele_types)) for v in self.allele_graph]))
-        self._print_clique_assigns()
-        self._print_factors()
-
-
-    def _print_clique_assigns(self):
-        uG = self.tri_graph
-        index = Linkage.index
-        cliques = 0
-        out = []
-        for clique in find_cliques(uG):
-            if len(clique) == 3:
-                vars = [str(index(c)) for c in clique]
-                vars.sort(key=lambda x: int(x))
-                out.append(((len(clique), ' '.join(vars))))
-                cliques += 1
-
-        print(cliques)
-        for clique_len,clique in out:
-            print(clique_len, clique)
-
-
-    def _print_factors(self):
-        uG = self.tri_graph
-        for clique in find_cliques(uG):
-            cl = len(clique) 
-            print('allele types =', self.allele_types)
-            print('clique len =', len(clique))
-            if cl == 3:
-                print(len(self.allele_types) ** cl)
-                self._build_factor(cl)
-
-
-    def _build_factor(self, cl):
-        factor = np.zeros((len(self.allele_types),) * cl)
-        at = len(self.allele_types)
-
-        for i in range(at):
-            for j in range(at):
-                factor[i][j][i] += 0.5
-                factor[i][j][j] += 0.5
-
-        for i in range(at):
-            for j in range(at):
-                for k in range(at):
-                    print(factor[i][j][k], end=' ')
-
-        print()
+    def mk_nd(self, x, w):
+        return str(x) + '_' + str(w)
+        
+        
+    def index(self, x): 
+        return (int(x[:-2]) * 2 + (0 if x[-1] == 'd' else 1)) - 1
 
 
 if __name__ == '__main__':
 
-    mrk_file = sys.argv[1] if len(sys.argv) > 1 else '../data/tiny_qtl.txt'
-    ped_file = sys.argv[2] if len(sys.argv) > 2 else '../data/tiny_data.txt'
+    mrk_file = sys.argv[1] if len(sys.argv) > 1 else '../data/test_qtl.txt'
+    ped_file = sys.argv[2] if len(sys.argv) > 2 else '../data/test_data.txt'
 
     l = Linkage(mrk_file=mrk_file, ped_file=ped_file)
-    l.triangulate()
-    l.write_UAI()
