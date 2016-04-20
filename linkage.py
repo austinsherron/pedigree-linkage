@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 from pedigree import Pedigree
 from networkx import adjacency_matrix,topological_sort,DiGraph,Graph
@@ -149,6 +150,8 @@ class Linkage(Pedigree):
         uG = self.tri_graph
         for clique in find_cliques(uG):
             cl = len(clique) 
+            print('allele types =', self.allele_types)
+            print('clique len =', len(clique))
             if cl == 3:
                 print(len(self.allele_types) ** cl)
                 self._build_factor(cl)
@@ -173,6 +176,9 @@ class Linkage(Pedigree):
 
 if __name__ == '__main__':
 
-    l = Linkage(mrk_file='../data/test_qtl.txt', ped_file='../data/test_data.txt')
+    mrk_file = sys.argv[1] if len(sys.argv) > 1 else '../data/tiny_qtl.txt'
+    ped_file = sys.argv[2] if len(sys.argv) > 2 else '../data/tiny_data.txt'
+
+    l = Linkage(mrk_file=mrk_file, ped_file=ped_file)
     l.triangulate()
     l.write_UAI()
