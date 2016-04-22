@@ -33,12 +33,12 @@ class Pedigree:
         ----------
         file : string
             String file name that contains pedigree data. It is expected that the
-            file conains pedigree data, one individual per line, with an id at index 0,
-            and parents at indices 1 and 2.
+            file conains pedigree data, one individual per line, with an id at index 
+            0, and parents at indices 1 and 2.
 
         Returns
         -------
-        pedigree : {literal -> [literal]}
+        pedigree : {literal: {'cs': [literal] 'sex': 'm'/'f'}}
             Dictionary rep (adj. list) of pedigree graph.
         """
         pedigree = {}
