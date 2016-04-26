@@ -2,3 +2,4 @@ __pycache__/*
 *.uai
 *.evid
 *.swp
+*.tmp
