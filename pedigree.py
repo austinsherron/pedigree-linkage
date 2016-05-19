@@ -6,8 +6,23 @@ from collections import defaultdict
 
 class Pedigree:
 
-
     def __init__(self, file=None, draw=False):
+        """
+        Constructor for pedigree class.  Constructor parses pedigree file into
+        the format that is used by the QTL class. 
+        
+        Parameters
+        ----------
+        file : str
+            Name of file that contains pedigree. Pedigree files have rows 
+            with the following format:
+
+                ID (int > 0) Sire (int >= 0) Dam (int >= 0) Sex (M or F)
+
+            Progeny with Sires/Dams labeled as 0 are founders.
+        draw : boolean (optional) 
+            If true, pedigree graph will be drawn (require networkx).
+        """
         if file:
             self.build_pedigree(file)
 
@@ -16,6 +31,15 @@ class Pedigree:
 
 
     def print_pedigree(self, pedigree=None):
+        """
+        Method that prints the pedigree in the following format:
+            parent -> child_1 + child_2 ... + child_n
+
+        Parameters
+        ----------
+        pedigree : {literal -> [literals]} (optional)
+            Pedigree dict.  If none is supplied, self.pedigree will be used.
+        """
         if not pedigree:
             pedigree = self.pedigree
 
@@ -33,8 +57,8 @@ class Pedigree:
         ----------
         file : string
             String file name that contains pedigree data. It is expected that the
-            file conains pedigree data, one individual per line, with an id at index 
-            0, and parents at indices 1 and 2.
+            file conains pedigree data, one individual per line. Refer to 
+            constructor for format details.
 
         Returns
         -------
@@ -45,6 +69,7 @@ class Pedigree:
         inverted_ped = defaultdict(dict)
 
         for r in self._file_iter(file):
+            # build 'standard pedigree' (parent -> children)
             pedigree[r[0]] = {'cs': [], 'sex': r[3].lower()}
 
             if int(r[1]) != 0:
@@ -53,6 +78,7 @@ class Pedigree:
             if int(r[2]) != 0:
                 pedigree[r[2]]['cs'].append(r[0])
 
+            # also build 'inverted pedigree' (child -> parents)
             inverted_ped[r[0]] = {'s': r[1],'d': r[2]}
 
         self.pedigree = pedigree
@@ -63,10 +89,13 @@ class Pedigree:
 
     def graph_pedigree(self, pedigree=None):
         """
+        Method that graphs the given pedigree.
+
         Parameters
         ----------
-        pedigree : {literal -> [literal]}
-            Dictionary rep (adj. list) of pedigree graph.
+        pedigree : {literal -> [literal]} (optional)
+            Dictionary rep (adj. list) of pedigree graph. If none is provided,
+            self.pedigree will be used.
         """
         if not pedigree:
             pedigree = self.pedigree
@@ -79,6 +108,7 @@ class Pedigree:
             for c in cs['cs']:
                 G.add_edge(p, c)
 
+        # change drawing method to change the shape of the graph
         pos = nx.draw_spectral(G)
         nx.draw(G, pos)
         plt.show()
@@ -86,14 +116,18 @@ class Pedigree:
 
     def _file_iter(self, file):
         """
-        Custom iterator for pedigree file.
+        Custom iterator arbitrary files.  Method yields split lines of file,
+        one at a time.
 
         Parameters
         ----------
-        file : string
-            String file name that contains pedigree data. It is expected that the
-            file conains pedigree data, one individual per line, with an id at index 0,
-            and parents at indices 1 and 2.
+        file : str
+            Name of file that contains data (a pedigree, in this class).
+
+        Yields 
+        ------ 
+        l : [str]
+            Lines of file split on whitespace.
         """
         with open(file) as f:
             next(f)

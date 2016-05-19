@@ -11,6 +11,9 @@ from random import random as rand
 class UAI:
 
     def __init__(self, qtl):
+        """
+        Constructor for the UAI class. This is the class 
+        """
         self.qtl = qtl
 
 
