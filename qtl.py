@@ -6,6 +6,7 @@ import sys
 from networkx import ancestors,DiGraph,Graph
 from networkx import connected_component_subgraphs,topological_sort
 from pedigree import Pedigree
+from query import Query
 
 
 class QTL:
@@ -420,8 +421,16 @@ if __name__ == '__main__':
     pos_file    = sys.argv[4] if len(sys.argv) > 4 else '../data/test_pos.txt'
 
     ped = Pedigree(ped_file)
-    qtl = QTL(ped, qtl_file, allele_file, pos_file)
-    print(qtl.allele_positions)
-    print(qtl.allele_info)
-    print(qtl.vars)
-    print(qtl.var_idxs)
+    qtl = QTL(ped, qtl_file, allele_file, pos_file, num_alleles=2)
+    qur = Query(qtl)
+    #print(qtl.allele_positions)
+    #print(qtl.allele_info)
+    #print(qtl.vars)
+    #print(qtl.var_idxs)
+
+#    ped.print_ped_graph()
+#    for v,vi in qtl.var_idxs.items():
+#        print(v, '->', vi)
+#    print()
+    for v,vi in qur.extract_within_range(3500, 2, [0], float('inf')).items():
+        print(v, '->', vi)
