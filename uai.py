@@ -104,7 +104,6 @@ class UAI:
             elif len(clique) == 2 and self.qtl[var,0] == 'S':
                 self._print_seg_clique(clique)
             else:
-                print(clique)
                 raise AssertionError('UAI._print_factors: unrecognized clique type of size ' + str(len(clique)))
 
 
@@ -303,16 +302,27 @@ if __name__ == '__main__':
     parser.add_argument('pos_file')
     parser.add_argument('-no', '--network_output_file')
     parser.add_argument('-eo', '--evid_output_file')
-    parser.add_argument('-na', '--num_alleles')
-    parser.add_argument('-po', '--percent_to_observe')
+    parser.add_argument('-na', '--num_alleles', type=int)
+    parser.add_argument('-po', '--percent_to_observe', type=float, default=0.5)
     parser.add_argument('-va', '--var_assigns')
+    parser.add_argument('-nf', '--num_founders', type=int)
+    parser.add_argument('-ng', '--num_gens', type=int)
+    parser.add_argument('-mo', '--max_offspring', type=int)
+    parser.add_argument('-sg', '--start_gen', type=int)
     args = parser.parse_args()
 
     ped = Pedigree(args.ped_file)
-    num = int(args.num_alleles) if args.num_alleles else 1
+    if None not in [args.num_founders, args.num_gens, args.max_offspring, args.start_gen]:
+        extract_args = {
+            'num_founders': args.num_founders,
+            'gens': args.num_gens,
+            'max_offspring': args.max_offspring,
+            'start_gen': args.start_gen
+        }
+        ped.extract_sub_ped(**extract_args)
+    num = args.num_alleles if args.num_alleles else 1
     wva = args.var_assigns
     qtl = QTL(ped, args.qtl_file, args.allele_file, args.pos_file, num)
-    qtl.extract_sub_pedigree()
     uai = UAI(qtl)
 
     net_out_file = args.network_output_file if args.network_output_file else 'out.uai'
@@ -323,7 +333,7 @@ if __name__ == '__main__':
     evid_out_file = args.evid_output_file if args.evid_output_file else 'out.uai.evid'
     with open(evid_out_file, 'w') as f:
         sys.stdout = f
-        uai.observe()
+        uai.observe(prob=args.percent_to_observe)
 
     if wva:
         with open('var_assigns', 'w') as f:

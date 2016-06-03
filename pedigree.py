@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 from collections import defaultdict
+from random import sample
 
 
 class Pedigree:
@@ -44,11 +45,20 @@ class Pedigree:
             pedigree = self.pedigree
 
         for p,cs in pedigree.items():
-            cs = cs['ps']
+            cs = cs['cs']
             frm = cs[0] if len(cs) > 0 else ''
             for c in cs[1:]:
                 frm += ' + ' + str(c)
             print(p, '->', frm)
+
+
+    def print_ped_graph(self, ped_graph=None):
+        if not ped_graph:
+            ped_graph = self.ped_graph
+
+        for node in ped_graph.nodes():
+            out = node + ' -> ' + ' + '.join(ped_graph.successors(node))
+            print(out)
 
     
     def build_pedigree(self, file):
@@ -67,24 +77,58 @@ class Pedigree:
         """
         pedigree = {}
         inverted_ped = defaultdict(dict)
+        ped_graph = nx.DiGraph()
 
         for r in self._file_iter(file):
             # build 'standard pedigree' (parent -> children)
-            pedigree[r[0]] = {'cs': [], 'sex': r[3].lower()}
+            # also build ped graph for convenience
+            pedigree[r[0]] = {'cs': [], 'sex': r[3].lower(), 'gen': int(r[4])}
 
             if int(r[1]) != 0:
                 pedigree[r[1]]['cs'].append(r[0])
+                ped_graph.add_edge(r[1], r[0])
 
             if int(r[2]) != 0:
                 pedigree[r[2]]['cs'].append(r[0])
+                ped_graph.add_edge(r[2], r[0])
 
             # also build 'inverted pedigree' (child -> parents)
             inverted_ped[r[0]] = {'s': r[1],'d': r[2]}
 
         self.pedigree = pedigree
         self.inverted_ped = inverted_ped
+        self.ped_graph = ped_graph
 
         return pedigree
+
+
+    def extract_sub_ped(self, num_founders=10, gens=10, max_offspring=2, start_gen=0):
+        """
+        """
+        nodes = self.ped_graph.nodes()
+        current_gen = [n for n in nodes if self.pedigree[n]['gen'] == start_gen]
+        current_gen = set(sample(current_gen, num_founders))
+
+        sub_ped = {}
+        for i in range(gens):
+            next_gen = set()
+            for p in current_gen:
+                sub_ped[p] = self.pedigree[p]
+                if max_offspring > len(sub_ped[p]['cs']):
+                    children = set(sub_ped[p]['cs'])
+                else:
+                    children = set(sample(sub_ped[p]['cs'], max_offspring))
+                next_gen  |= children
+                for child in children:
+                    parents = self.ped_graph.predecessors(child) 
+                    for parent in parents:
+                        if parent not in sub_ped:
+                            sub_ped[parent] = self.pedigree[parent]
+
+            current_gen = next_gen
+
+        self.pedigree = sub_ped
+        return sub_ped
 
 
     def graph_pedigree(self, pedigree=None):
@@ -138,5 +182,11 @@ class Pedigree:
 
 if __name__ == '__main__':
 
-    p = Pedigree('../QMSim_Mac/r_ex01/p1_data_001.txt')
-    print(p.print_pedigree())
+    p = Pedigree('../data/test_data.txt')
+    p.print_pedigree()
+    #print()
+    #print(p.pedigree)
+    #p.print_ped_graph()
+    p.extract_sub_ped(num_founders=3, gens=1, max_offspring=1)
+    print()
+    p.print_pedigree()

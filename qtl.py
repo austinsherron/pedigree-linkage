@@ -412,54 +412,6 @@ class QTL:
         return np.round(0.5 * (1 - np.e**(-2 * np.abs(pos_1 - pos_2))), 6)
 
 
-    def extract_sub_pedigree(self, num_founders=5, gens=10, offspring=2, start_gen=0):
-        """
-        Method that extracts a sub
-        """
-        G = self.allele_graph
-        last_gen = [v for v in self.vars if G.in_degree(v) == 0 and self[v,0] != 'S']
-
-        if len(last_gen) < num_founders:
-            raise ValueError('QTL.extract_sub_pedigree: number of founders is less than num_founders (' + num_founders + ')')
-
-        last_gen = set(last_gen[:num_founders])
-        new_G    = DiGraph()
-        # for each desired generation
-        for i in range(gens):
-            print(i, len(last_gen))
-            # keep track of next gen
-            next_gen = set()              
-            # for each parent in the last gen
-            for var in last_gen:
-                print('parent =', var)
-                # add parent to graph
-                new_G.add_node(var)
-                # find children of current parent
-                children = set(G.successors(var)[:offspring])
-                next_gen |= children
-                # for each child of that parent
-                for child in children:
-                    print('child =', child)
-                    # find the missing parent
-                    missing_parents = G.predecessors(child)
-                    # for each missing parent (there will only be one)
-                    for missing_parent in missing_parents:
-                        print('missing parent =', missing_parent)
-                        # add to the graph
-                        new_G.add_node(missing_parent)
-            last_gen = next_gen
-
-        for node in new_G.nodes():
-            if node not in last_gen:
-                for child in G.successors(node):
-                    new_G.add_edge(node, child)
-        
-        self.vars = topological_sort(new_G)
-        self.var_idxs = dict([(v,i) for i,v in enumerate(self.vars)])
-        self.allele_graph = new_G
-        return new_G
-
-
 if __name__ == '__main__':
 
     qtl_file    = sys.argv[1] if len(sys.argv) > 1 else '../data/test_qtl.txt'
