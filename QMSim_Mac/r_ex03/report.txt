@@ -1,0 +1,43 @@
+11:16:52  Wednesday, April 20, 2016
+ .---------------------------------------------. 
+|          .--. .    . .-.                      |
+|         :    :|\  /|(   ) o                   |
+|         |    || \/ | `-.  .  .--.--.          |
+|         :  ( ;|    |(   ) |  |  |  |          |
+|          `--`-'    ' `-'-' `-'  '  `-         |
+|          (QTL and Marker Simulator)           |
+|             Version 1.10 (8-bit)              |
+|                                               |
+|  Centre for Genetic Improvement of Livestock  |
+|         University of Guelph, Canada          |
+|                                               |
+|    Mehdi Sargolzaei and Flavio S. Schenkel    |
+|       ------ Copyright (c) 2007 ------        |
+|         (Last update: July 12, 2013)          |
+ `---------------------------------------------' 
+ .---------------------------------------------. 
+|  Example 3 - Creating two divergent lines...  |
+ `---------------------------------------------' 
+Parameter file                   : ex03.prm
+Output folder                    : r_ex03/
+Seed for random number generator : from current system time
+Seed is backed up in             : r_ex03/seed
+
+Max. no. threads                 : 3
+No. replicates                   : 1
+No. populations                  : 2
+h2                               : 0.2
+Polygenic variance               : 0
+QTL variance                     : 0.2
+Residual variance                : 0.8
+Phenotypic variance              : 1
+No. chromosomes                  : 30
+No. QTL in total                 : 750
+No. markers in total             : 4,980
+Marker mutation rate             : 2.5e-05
+QTL mutation rate                : 2.5e-05
+Crossover interference           : 25
+
+Replicate   1
+Overall time : 00:00:09
+Completed normally.

@@ -1,0 +1,16 @@
+# pedigree columns
+
+1. family
+2. person (identifier)
+3. father
+4. mother
+5. sex
+6. disease status (unaffected, affected, missing)
+7. quantitative traits (real valued number)
+8. marker genotypes (two ints/chars, maybe sep by /)
+
+
+
+
+
+

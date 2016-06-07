@@ -1,0 +1,97 @@
+/*******************************
+ **     Global parameters     **
+ *******************************/
+title = "Example 12 - Migration";
+nrep  = 1;                    //Number of replicates
+h2    = 0.3;                  //Heritability
+qtlh2 = 0.1;                  //QTL heritability
+phvar = 1.0;                  //Phenotypic variance
+
+/*******************************
+ **   Historical population   **
+ *******************************/
+begin_hp;
+   hg_size = 1000 [0]         //Size of the historical generations
+             1000 [100];
+end_hp;
+
+/*******************************
+ **        Populations        **
+ *******************************/
+begin_pop = "line1";
+   begin_founder;
+      male   [n = 10,  pop = "hp", select = tbv /h];
+      female [n = 100, pop = "hp", select = tbv /h];
+   end_founder;
+   ls  = 2;                   //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny
+   ng  = 10;                  //Number of generations
+   md  = rnd;                 //Mating design
+   sd  = phen /h;             //Selection design
+   begin_popoutput;
+        data;
+        stat;
+        allele_freq /gen 10;
+   end_popoutput;
+end_pop;
+
+begin_pop = "line2";
+   begin_founder;
+      male   [n = 10,  pop = "hp", select = tbv /l];
+      female [n = 100, pop = "hp", select = tbv /l];
+   end_founder;
+   ls  = 2;                   //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny 
+   ng  = 10;                  //Number of generations
+   md  = rnd;                 //Mating design
+   sd  = phen /l;             //Selection design
+   begin_popoutput;
+        data;
+        stat;
+        allele_freq /gen 10;
+        end_popoutput;
+end_pop;
+
+//2 males and 10 females from line2 migrate to line1
+begin_pop = "line1_c";
+   begin_founder;
+      male   [n =  8, pop = "line1", gen = 10];
+      male   [n =  2, pop = "line2", gen = 10];
+      female [n = 90, pop = "line1", gen = 10];
+      female [n = 10, pop = "line2", gen = 10];
+   end_founder;
+   ls  = 2;                   //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny 
+   ng  = 5;                   //Number of generations
+   md  = rnd;                 //Mating design
+   sd  = rnd;                 //Selection design
+   begin_popoutput;
+        data;
+        stat;
+        allele_freq /gen 5;
+   end_popoutput;
+end_pop;
+
+/*******************************
+ **          Genome           **
+ *******************************/
+begin_genome;
+   begin_chr = 10;
+      chrlen = 100;           //Chromosome length
+      nmloci = 101;           //Number of markers
+      mpos   = even;          //Marker positions
+      nma    = all 4;         //Number of marker alleles
+      maf    = eql;           //Marker allele frequencies
+      nqloci = 25;            //Number of QTL
+      qpos   = rnd;           //QTL positions
+      nqa    = rnd 2 3 4;     //Number of QTL alleles
+      qaf    = eql;           //QTL allele frequencies
+      qae    = rndg 0.4;      //QTL allele effects
+   end_chr;
+end_genome;
+
+/*******************************
+ **       Output options      **
+ *******************************/
+begin_output;
+end_output;

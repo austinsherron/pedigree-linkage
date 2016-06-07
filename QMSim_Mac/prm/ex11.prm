@@ -1,0 +1,106 @@
+/*******************************
+ **     Global parameters     **
+ *******************************/
+title = "Example 11 - F2 and backcross designs";
+nrep  = 1;                    //Number of replicates
+h2    = 0.2;                  //Heritability
+qtlh2 = 0.05;                 //QTL heritability
+phvar = 1.0;                  //Phenotypic variance
+
+/*******************************
+ **   Historical population   **
+ *******************************/
+begin_hp;
+   hg_size = 10000 [0]        //Size of the historical generations
+             10000 [100];
+end_hp;
+
+/*******************************
+ **        Populations        **
+ *******************************/
+begin_pop = "line1";
+   begin_founder;
+      male   [n = 20,  pop = "hp", select = tbv /h];
+      female [n = 400, pop = "hp", select = tbv /h];
+   end_founder;
+   ls  = 2;                   //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny 
+   ng  = 20;                  //Number of generations
+   md  = p_assort /tbv;       //Mating design
+   sd  = tbv /h;              //Selection design
+end_pop;
+
+begin_pop = "line2";
+   begin_founder;
+      male   [n = 20,  pop = "hp", select = tbv /l];
+      female [n = 400, pop = "hp", select = tbv /l];
+   end_founder;
+   ls  = 2;                   //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny 
+   ng  = 20;                  //Number of generations
+   md  = p_assort /tbv;       //Mating design
+   sd  = tbv /l;              //Selection design
+end_pop;
+
+//Cross between line1 and line 2 to generate F2
+begin_pop = "cross";
+   begin_founder;
+      male   [n = 20, pop = "line1", gen = 20];
+      female [n = 400, pop = "line2", gen = 20];
+   end_founder;
+   ls  = 2;                   //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny 
+   ng  = 2;                   //Number of generations
+   md  = rnd;                 //Mating design
+   sr  = 1;                   //Replacement ratio for sires
+   dr  = 1;                   //Replacement ratio for dams
+   sd  = rnd;                 //Selection design
+   cd  = rnd;                 //Culling design
+   begin_popoutput;
+        data;
+        genotype /gen 1 2;
+        stat;
+   end_popoutput;
+end_pop;
+
+//Backcrossing F1 to line1 
+begin_pop = "bckcross";
+   begin_founder;
+      male   [n = 20, pop = "line1", gen = 20];
+      female [n = 400, pop = "cross", gen = 1];
+   end_founder;
+   ls  = 2;                   //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny 
+   ng  = 1;                   //Number of generations
+   md  = rnd;                 //Mating design
+   begin_popoutput;
+        data;
+        genotype /gen 1;
+        stat;
+   end_popoutput;
+end_pop;
+
+/*******************************
+ **          Genome           **
+ *******************************/
+begin_genome;
+   begin_chr = 1;
+      chrlen = 100;           //Chromosome length
+      nmloci = 8;             //Number of markers
+      mpos   = pd 30 35 39 40.001 60.001 61 65 70;  //Marker positions
+      nma    = all 2;         //Number of marker alleles
+      maf    = eql;           //Marker allele frequencies
+      nqloci = 2;             //Number of QTL
+      qpos   = pd 40 60;      //QTL positions
+      nqa    = all 2;         //Number of QTL alleles
+      qaf    = eql;           //QTL allele frequencies
+      qae    = pd 0.1 0.9;    //QTL allele effects
+      cld    = mq;      //Complete LD in the first historical generation
+   end_chr;
+end_genome;
+
+/*******************************
+ **       Output options      **
+ *******************************/
+begin_output;
+end_output;

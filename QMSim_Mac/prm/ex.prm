@@ -1,0 +1,63 @@
+/*******************************
+ **     Global parameters     **
+ *******************************/
+title = "Example 4 - Different genome lengths for males and females - 10k SNP panel";
+nrep  = 1;                    //Number of replicates
+h2    = 0.2;                  //Heritability
+qtlh2 = 0.2;                  //QTL heritability
+phvar = 1.0;                  //Phenotypic variance
+
+/*******************************
+ **   Historical population   **
+ *******************************/
+begin_hp;
+   hg_size = 40 [0]          //Size of the historical generations
+             40 [100];
+   nmlhg   = 10;              //Number of males in the last generation
+end_hp;
+
+/*******************************
+ **        Populations        **
+ *******************************/
+begin_pop = "p1";
+   begin_founder;
+      male   [n = 10, pop = "hp"];
+      female [n = 30, pop = "hp"];
+   end_founder;
+   ls  = 2;                   //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny
+   ng  = 5;                  //Number of generations
+   begin_popoutput;
+        allele_freq /gen 0 1;
+        data;
+        genotype /snp_code;
+   end_popoutput;
+end_pop;
+
+/*******************************
+ **          Genome           **
+ *******************************/
+begin_genome;
+   begin_chr = 1;
+      chrlen = 2;             //Chromosome length
+      //female_map_scale=1.25;  //Scale factor for female map
+      nmloci = 1;             //Number of markers
+      mpos   = rnd;           //Marker positions
+      nma    = all 2;         //Number of marker alleles
+      maf    = eql;           //Marker allele frequencies
+      nqloci = 10;            //Number of QTL
+      qpos   = rnd;           //QTL positions
+      nqa    = pd 3 3 3 3 3 3 3 3 3 3;         //Number of QTL alleles
+      qaf    = rnd;    //QTL allele frequencies
+      qae    = rndg 0.4;      //QTL allele effects
+   end_chr;
+end_genome;
+
+/*******************************
+ **       Output options      **
+ *******************************/
+
+begin_output;
+   linkage_map;
+   hp_stat;
+end_output;

@@ -1,0 +1,92 @@
+/*******************************
+ **     Global parameters     **
+ *******************************/
+title = "Example 3 - Creating two divergent lines - 5k SNP panel";
+nrep  = 1;                    //Number of replicates
+h2    = 0.2;                  //Heritability
+qtlh2 = 0.2;                  //QTL heritability
+phvar = 1.0;                  //Phenotypic variance
+
+/*******************************
+ **   Historical population   **
+ *******************************/
+begin_hp;
+   hg_size = 840 [0]          //Size of the historical generations
+             840 [200];
+   nmlhg   = 40;              //Number of males in the last generation
+end_hp;
+
+/*******************************
+ **        Populations        **
+ *******************************/
+begin_pop = "Line 1";
+   begin_founder;
+      male   [n =  20, pop = "hp"];
+      female [n = 400, pop = "hp"];
+   end_founder;
+   ls  = 1 2 [0.05];          //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny
+   ng  = 20;                  //Number of generations
+   md  = maxf;                //Mating design
+   sr  = 0.4;                 //Replacement ratio for sires
+   dr  = 0.2;                 //Replacement ratio for dams
+   sd  = phen /h;             //Selection design
+   cd  = age;                 //Culling design
+   begin_popoutput;
+        ld /maft 0.1 /gen 0;
+        data;
+        genotype /snp_code /gen 10;
+        allele_freq /gen 10;
+   end_popoutput;
+end_pop;
+
+begin_pop = "Line 2";
+   begin_founder;
+      male   [n =  20, pop = "hp"] /not_founder_yet;
+      female [n = 400, pop = "hp"] /not_founder_yet;
+   end_founder;
+   ls  = 1 2 [0.05];          //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny
+   ng  = 20;                  //Number of generations
+   md  = maxf;                //Mating design
+   sr  = 0.4;                 //Replacement ratio for sires
+   dr  = 0.2;                 //Replacement ratio for dams
+   sd  = phen /l;             //Selection design
+   cd  = age;                 //Culling design
+   begin_popoutput;
+        data;
+        genotype /snp_code /gen 10;
+        allele_freq /gen 10;
+   end_popoutput;
+end_pop;
+
+/*******************************
+ **          Genome           **
+ *******************************/
+begin_genome;
+   begin_chr = 30;
+      chrlen = 100;           //Chromosome length
+      nmloci = 166;           //Number of markers
+      mpos   = rnd;           //Marker positions
+      nma    = all 2;         //Number of marker alleles
+      maf    = eql;           //Marker allele frequencies
+      nqloci = 25;            //Number of QTL
+      qpos   = rnd;           //QTL positions
+      nqa    = rnd 2 3 4;     //Number of QTL alleles
+      qaf    = eql;           //QTL allele frequencies
+      qae    = rndg 0.4;      //QTL allele effects
+   end_chr;
+   mmutr     = 2.5e-5 /recurrent; //Marker mutation rate
+   qmutr     = 2.5e-5;            //QTL mutation rate
+   interference = 25;
+   r_mpos_g;                  //Randomize marker positions across genome
+   r_qpos_g;                  //Randomize QTL positions across genome
+end_genome;
+
+/*******************************
+ **       Output options      **
+ *******************************/
+begin_output;
+   linkage_map;
+   allele_effect;
+end_output;

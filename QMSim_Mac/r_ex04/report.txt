@@ -1,0 +1,43 @@
+23:17:17  Monday, June 6, 2016
+ .---------------------------------------------. 
+|          .--. .    . .-.                      |
+|         :    :|\  /|(   ) o                   |
+|         |    || \/ | `-.  .  .--.--.          |
+|         :  ( ;|    |(   ) |  |  |  |          |
+|          `--`-'    ' `-'-' `-'  '  `-         |
+|          (QTL and Marker Simulator)           |
+|             Version 1.10 (8-bit)              |
+|                                               |
+|  Centre for Genetic Improvement of Livestock  |
+|         University of Guelph, Canada          |
+|                                               |
+|    Mehdi Sargolzaei and Flavio S. Schenkel    |
+|       ------ Copyright (c) 2007 ------        |
+|         (Last update: July 12, 2013)          |
+ `---------------------------------------------' 
+ .---------------------------------------------. 
+|  Example 4 - Different genome lengths for...  |
+ `---------------------------------------------' 
+Parameter file                   : prm/ex04.prm
+Output folder                    : r_ex04/
+Seed for random number generator : from current system time
+Seed is backed up in             : r_ex04/seed
+
+Max. no. threads                 : 3
+No. replicates                   : 1
+No. populations                  : 1
+h2                               : 0.2
+Polygenic variance               : 0
+QTL variance                     : 0.2
+Residual variance                : 0.8
+Phenotypic variance              : 1
+No. chromosomes                  : 30
+No. QTL in total                 : 60
+No. markers in total             : 9,990
+Marker mutation rate             : 0
+QTL mutation rate                : 0
+Crossover interference           : 0
+
+Replicate   1
+Overall time : 00:00:04
+Completed normally.

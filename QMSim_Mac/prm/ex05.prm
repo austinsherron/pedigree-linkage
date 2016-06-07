@@ -1,0 +1,77 @@
+/*******************************
+ **     Global parameters     **
+ *******************************/
+title = "Example 5 - Hotspots and coldspots";
+nrep  = 1;                    //Number of replicates
+h2    = 0.2;                  //Heritability
+qtlh2 = 0.2;                  //QTL heritability
+phvar = 1.0;                  //Phenotypic variance
+
+/*******************************
+ **   Historical population   **
+ *******************************/
+begin_hp;
+   hg_size = 420 [0]          //Size of the historical generations
+             420 [200];
+   nmlhg   = 20;              //Number of males in the last generation
+end_hp;
+
+/*******************************
+ **        Populations        **
+ *******************************/
+begin_pop = "p1";
+   begin_founder;
+      male   [n =  20, pop = "hp"];
+      female [n = 400, pop = "hp"];
+   end_founder;
+   ls  = 2;                   //Litter size
+   pmp = 0.5 /fix;            //Proportion of male progeny
+   ng  = 10;                  //Number of generations
+   begin_popoutput;
+        data;
+        genotype;
+   end_popoutput;
+end_pop;
+
+/*******************************
+ **          Genome           **
+ *******************************/
+begin_genome;
+   begin_chr = 1;                         //Chromosome 1
+      chrlen = 150;                       //Chromosome length
+      nmloci = 12;                        //Number of markers
+      mpos   = pd 0.0001 .1 .2 .3         //Marker positions
+                  100 101 102 103
+                  135 140 145 150;
+      nma    = all 2;                     //Number of marker alleles
+      maf    = rnd;                       //Marker allele frequencies
+      nqloci = 12;                        //Number of QTL
+      qpos   = pd .05 .15 .25 .35         //QTL positions
+                  100.5 101.5 102.5 103.5
+                  132   137   142   147;
+      nqa    = all 4;                     //Number of QTL alleles
+      qaf    = rnd;                       //QTL allele frequencies
+      qae    = rndn;                      //QTL allele effects
+   end_chr;
+
+   begin_chr = 1;                         //Chromosome 2
+      chrlen = 100;                       //Chromosome length
+      nmloci = 12;                        //Number of markers
+      mpos   = pd 10.00 10.01 10.02 10.03 10.04 10.05  //Marker positions
+                  60.05 60.06 60.07 60.08 60.09 60.10;
+      nma    = all 2;                     //Number of marker alleles
+      maf    = rnd;                       //Marker allele frequencies
+      nqloci = 2;                         //Number of QTL
+      qpos   = pd 10.025 60.075;          //QTL positions
+      nqa    = all 4;                     //Number of QTL alleles
+      qaf    = rnd;                       //QTL allele frequencies
+      qae    = rndn;                      //QTL allele effects
+   end_chr;
+end_genome;
+
+/*******************************
+ **       Output options      **
+ *******************************/
+begin_output;
+   linkage_map;
+end_output;

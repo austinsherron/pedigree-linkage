@@ -1,0 +1,15 @@
+Progeny Sire    Dam     Sex  G   NMPrg NFPrg F        Homo     Phen      Res       Polygene  QTL      
+1    0    0    M   0
+2    0    0    F   0
+3    0    0    M   0
+4    0    0    F   0
+5    0    0    M   0
+6    1    2    F   1
+7    3    4    M   1
+8    0    0    F   0
+9    0    0    M   0
+10    5    6    F  2
+11    7    6    F  2
+12    7    8    F  2
+13    9    10    M 3  
+14    9    10    M 3
