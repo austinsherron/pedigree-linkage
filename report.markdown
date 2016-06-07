@@ -12,6 +12,9 @@ linkage analysis projects.  More speficially, this project sought to:
   (UAI)
 - extract meaningful subsets of variables from the aforementioned bayesian
   network pedigrees for use in queries
+ 
+This paper assumes general familiary with "segregation networks" (Bayesian
+network representations of pedigrees). For more information, see TODO.
 
 # Generating Pedigree/QTL Data with QMSim
 
@@ -322,6 +325,8 @@ is used, the number of int values specified must be the same as the value of
 difficult to measure, but, intuitively, more allelic types means more complex
 networks. 
 
+### Output
+
 ### Command Line Execution
 
 TODO
@@ -332,16 +337,18 @@ TODO
 
 # Creating Segregation Networks
 
+## Pedigrees
+
+### `pedigree.py`
+
 ## Segregation Networks
 
-## `pedigree.py`
-
-## `qtl.py`
+### `qtl.py`
 
 # Converting Segregation Networks to UAI
 
 ## `uai.py`
 
-# Extracting Query Nodes
+# Extracting Query Variables
 
 ## `query.py`
