@@ -21,8 +21,8 @@ end_hp;
  *******************************/
 begin_pop = "p1";
    begin_founder;
-      male   [n = 10, pop = "hp"];
-      female [n = 10, pop = "hp"];
+      male   [n = 5, pop = "hp"];
+      female [n = 5, pop = "hp"];
    end_founder;
    ls  = 2;                   //Litter size
    pmp = 0.5 /fix;            //Proportion of male progeny
@@ -47,8 +47,8 @@ begin_genome;
       maf    = eql;           //Marker allele frequencies
       nqloci =  2;            //Number of QTL
       qpos   = rnd;           //QTL positions
-      nqa    = pd 2 4;     //Number of QTL alleles
-      qaf    = pd 0.5 0.5 0.25 0.25 0.25 0.25;           //QTL allele frequencies
+      nqa    = rnd 2 3;     //Number of QTL alleles
+      qaf    = rnd;           //QTL allele frequencies
       qae    = rndg 0.4;      //QTL allele effects
    end_chr;
 end_genome;
