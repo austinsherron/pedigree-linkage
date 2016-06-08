@@ -8,7 +8,7 @@ from random import sample
 class Pedigree:
 
     def __init__(self, file=None, draw=False):
-        """
+       	"""
         Constructor for pedigree class.  Constructor parses pedigree file into
         the format that is used by the QTL class. 
         
@@ -53,6 +53,15 @@ class Pedigree:
 
 
     def print_ped_graph(self, ped_graph=None):
+		"""
+		Identical to print pedigree, except that this method uses a networkx 
+		DiGraph representation to print the pedigree.
+
+		Parameters
+		----------
+		ped_graph : networkx DiGraph (optional)
+			DiGraph representation of pedigree.
+		"""
         if not ped_graph:
             ped_graph = self.ped_graph
 
@@ -104,21 +113,46 @@ class Pedigree:
 
     def extract_sub_ped(self, num_founders=10, gens=10, max_offspring=2, start_gen=0):
         """
+		Method that extracts a subsets of the pedigree in self.ped_graph.
+
+		Parameters
+		----------
+		num_founders : int (optional)
+			The number of founders to use for pedigree extraction.
+		gens : int (optional)
+			The max number of generations to extract (measured in "steps" from
+			founders).
+		max_offspring : int (optional)
+			The max number of offspring to extract from each individual.
+		start_gen : int (optional)
+			The founder generation.
+
+		Returns
+		-------
+        sub_ped : {literal -> [literal]} (optional)
+			A subset of the pedigree contained in self.pedigree.
         """
         nodes = self.ped_graph.nodes()
+		# get all pedigree members in generation start_gen
         current_gen = [n for n in nodes if self.pedigree[n]['gen'] == start_gen]
+		# select a random subset of those individuals to act as founders
         current_gen = set(sample(current_gen, num_founders))
 
         sub_ped = {}
+		# for each generation
         for i in range(gens):
             next_gen = set()
+			# for each person in the current generation
             for p in current_gen:
                 sub_ped[p] = self.pedigree[p]
+				# extract a subset (or all) of that individual's children
                 if max_offspring > len(sub_ped[p]['cs']):
                     children = set(sub_ped[p]['cs'])
                 else:
                     children = set(sample(sub_ped[p]['cs'], max_offspring))
+				# add them to the next generation
                 next_gen  |= children
+				# find all parents that might not be included in the current generation
                 for child in children:
                     parents = self.ped_graph.predecessors(child) 
                     for parent in parents:
@@ -154,6 +188,14 @@ class Pedigree:
 
 
     def _construct_graph(self):
+		"""
+		Helper method that constructs DiGraph object from pedigree dictionary.
+
+		Returns
+		-------
+		G : networkx DiGraph
+			DiGraph representation of the pedigree contained in self.pedigree.
+		"""
         G = nx.DiGraph()
 
         for p,cs in self.pedigree.items():
@@ -192,9 +234,9 @@ if __name__ == '__main__':
 
     p = Pedigree('../data/test_data.txt')
     p.print_pedigree()
-    #print()
-    #print(p.pedigree)
-    #p.print_ped_graph()
+    print()
+    print(p.pedigree)
+    p.print_ped_graph()
     p.extract_sub_ped(num_founders=3, gens=1, max_offspring=1)
     print()
     p.print_pedigree()

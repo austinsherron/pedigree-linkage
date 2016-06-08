@@ -304,7 +304,7 @@ if __name__ == '__main__':
     parser.add_argument('-no', '--network_output_file', type=str)
     parser.add_argument('-eo', '--evid_output_file', type=str)
     parser.add_argument('-na', '--num_alleles', type=int)
-    parser.add_argument('-po', '--percent_to_observe', type=float, default=0.5)
+    parser.add_argument('-po', '--prob_to_observe', type=float, default=0.5)
     parser.add_argument('-va', '--var_assigns', type=str)
     parser.add_argument('-nf', '--num_founders', type=int)
     parser.add_argument('-ng', '--num_gens', type=int)
@@ -334,19 +334,9 @@ if __name__ == '__main__':
     evid_out_file = args.evid_output_file if args.evid_output_file else 'out.uai.evid'
     with open(evid_out_file, 'w') as f:
         sys.stdout = f
-        uai.observe(prob=args.percent_to_observe)
+        uai.observe(prob=args.prob_to_observe)
 
     if wva:
         with open('var_assigns', 'w') as f:
             sys.stdout = f
             qtl.print_var_info()
-
-
-    qur = Query(qtl)
-    with open('out.uai.query', 'w') as f:
-        sys.stdout = f
-        vars = qur.extract_random_person(2, [0], float('inf')).items()
-        print(len(vars), end=' ')
-        for v,vi in vars:
-            print(vi, end=' ')
-        print()
