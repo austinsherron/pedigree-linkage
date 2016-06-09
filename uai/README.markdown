@@ -117,7 +117,7 @@ Tag			: `num_alleles`
 Required    : false
 Default     : 1
 Type        : `int`
-Description : the number of alleles to include in the model
+Description : the number of QTL to include in the model
 
 ###### Parameter: `prob`      
 
@@ -125,7 +125,7 @@ Tag			: `prob`
 Required    : false
 Default     : 0.5
 Type        : `float`
-Description : the probabily that a node will observed at increasing depths in the
+Description : the probabily that a node will be observed at increasing depths in the
 			  model's corresponding segregation network
 
 #### Extract Section
@@ -207,9 +207,9 @@ Description : the QTL indexes to extract from the model
 Tag			: `max_offspring`
 Required    : false
 Default     : 2 if `[query]` section is specified, `None` otherwise
-Type        : `int`
+Type        : `int` or `str`
 Description : the max number of children from each parent to include in the
-			  query family
+			  query family; can by `inf` (which acts as max)
 
 # Using `uai.py` 
 
@@ -277,7 +277,7 @@ Description : the number of alleles to include in the model
 
 Required    : false
 Default     : 0.5
-Type        : float
+Type        : `float`
 Flag        : `-po` or `--prob_to_observe`
 Description : the probabily that a node will observed at increasing depths in the
 			  model's corresponding segregation network
@@ -286,7 +286,7 @@ Description : the probabily that a node will observed at increasing depths in th
 
 Required    : false
 Default     : False
-Type        : Bool
+Type        : `boolean`
 Flag        : `-va` or `--var_assigns`
 Description : if true, a file named `var_assigns` will be created that contains
 			  information about the variables in the generated model
