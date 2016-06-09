@@ -1,4 +1,4 @@
-07:39:54  Tuesday, June 7, 2016
+13:41:02  Thursday, June 9, 2016
  .---------------------------------------------. 
 |          .--. .    . .-.                      |
 |         :    :|\  /|(   ) o                   |
@@ -39,5 +39,5 @@ QTL mutation rate                : 0
 Crossover interference           : 0
 
 Replicate   1
-Overall time : 00:00:05
+Overall time : 00:00:04
 Completed normally.

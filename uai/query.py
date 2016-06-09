@@ -13,10 +13,33 @@ from random import sample
 class Query:
     
     def __init__(self, qtl):
+        """
+        Constructor for Query class. Query class extracts related group of variables
+        from segregation networks to be used in MMAP queries.
+
+        Parameters
+        ----------
+        qtl : QTL object
+            The QTL object that contains the segregation network from which the 
+            query variables will be extracted.
+        """
         self.qtl = qtl
 
 
     def extract_allele_type(self, allele):
+        """
+        Method that extracts all variables of the same allele type:
+
+        Parameters
+        ----------
+        allele : int
+            The index in the QTL object of the allele to extract.
+
+        Returns
+        -------
+        query_nodes : {literal : int}
+            Dictionary that maps node names to UAI node indexes.
+        """
         G = self.qtl.allele_graph
 
         query_nodes = {}
@@ -28,6 +51,28 @@ class Query:
 
 
     def extract_within_range(self, person, rnge, alleles=[0], max_offspring=2):
+        """
+        Method that extracts families within rgne generations of person.
+
+        Parameters
+        ----------
+        person : literal
+            Progeny ID around which to extract nodes.
+        rnge : tuple or int
+            If rnge is a tuple, variables within rnge[0] generations before and 
+            rnge[1] generations after person will be extracted. If rnge is a 
+            tuple, rnge is converted to the tuple (rnge,rnge).
+        alleles : [int]
+            List that contains ints that correspond to allele indexes. Nodes with
+            allele IDs in alleles will be extracted.
+        max_offspring : int
+            The maximum number of offspring to extract from each extracted parent.
+
+        Returns
+        -------
+        query_nodes : {literal : int}
+            Dictionary that maps node names to UAI node indexes.
+        """
         if type(rnge) is tuple:
             suc,prd = rnge
         elif type(rnge) is int:
@@ -46,6 +91,10 @@ class Query:
 
 
     def extract_random_person(self, rnge, alleles=[0], max_offspring=2):
+        """
+        Method that extracts random family within range of a randomly chose
+        person. See extract_within_range for parameter descriptions.
+        """
         person = None
         while not person or self.qtl[person,0] == 'S':
             person = sample(self.qtl.allele_graph.nodes(), 1)[0]

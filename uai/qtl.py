@@ -137,6 +137,11 @@ class QTL:
             # to the allele value, when constructing evidence files
             allele_vals.append([a.split(':')[0] for a in r[4:]])
 
+        if len(allele_vals) < num_alleles:
+            msg  = 'QTL.get_allele_info: num_alleles ({}) should not be greater '
+            msg += 'than the number of available QTL'
+            raise ValueError(msg.format(num_alleles))
+
         self.allele_info = allele_info
         self.allele_vals = allele_vals
         return allele_info

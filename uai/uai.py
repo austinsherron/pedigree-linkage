@@ -222,7 +222,7 @@ class UAI:
         return factor
 
 
-    def observe(self, prob=0.5, see=None):
+    def observe(self, prob=0.5, see=None, all=False):
         """
         Container method responsible for writing UAI evidence files.
 
@@ -246,8 +246,10 @@ class UAI:
             If no function is provided, the following is used:
                 prob to be observed = prob * (i / total)
             Nodes "higher" in a toplogical sort are less likely to be observed.
+        all : boolean (optional)
+            If True, evidence file will contain true values of all variables.
         """
-        observed = self._build_observed(prob, see)
+        observed = self._build_observed(prob, see, all)
 
         print(len(observed), end=' ')
         for var,val in observed.items():
@@ -255,7 +257,7 @@ class UAI:
         print()
 
     
-    def _build_observed(self, prob=0.5, see=None):
+    def _build_observed(self, prob=0.5, see=None, all=False):
         """
         Method that build map of variables and their real values. See observe
         doc string for descriptions of parameters.
@@ -272,26 +274,48 @@ class UAI:
         # for each variable in a topological sort of the seg graph
         for i,var in enumerate(self.qtl.vars):
             # determine whether or not to observe the variable
-            if not see(prob, i, len(self.qtl.vars)):
-                continue
-
-            # TODO: can't currently observe segregation nodes
-            if self.qtl[var,0] == 'S':
+            if not see(prob, i, len(self.qtl.vars)) and not all:
                 continue
 
             # find true value of var and record it
-            observed[self.qtl.index(var)] = self.qtl.allele_val(var, index=True)
+            if self.qtl[var,0] == 'S':
+                val = self._observe_seg_var(var)
+            else:
+                val = self.qtl.allele_val(var, index=True)
+
+            observed[self.qtl.index(var)] = val
 
         return observed
 
 
     def _observe_seg_var(self, var):
-        prnt         = self.qtl[var,1]
-        id           = self.qtl[var,2]
-        sex          = self.qtl.ped.pedigree[prnt]['sex']
-        idx          = 0 if sex == 'm' else 1
-        child_allele = self.allele_assigns[id][idx]
-        parent_alls  = self.allele_assigns[prnt]
+        # find parent/child relevant to this segregation node
+        prnt   = self.qtl[var,1]
+        id     = self.qtl[var,2]
+        # find allele relevant to this segregation node
+        allele = int(self.qtl[var,3])
+
+        # get sex of parent to find relevant allele on child QTL
+        sex = self.qtl.ped.pedigree[prnt]['sex']
+        idx = 0 if sex == 'm' else 1
+
+        # get allele assignments
+        child_allele     = self.qtl.allele_assigns[id][allele][idx]
+        prnt_sire_allele = self.qtl.allele_assigns[prnt][allele][0]
+        prnt_dame_allele = self.qtl.allele_assigns[prnt][allele][1]
+
+        # cases
+        if child_allele == prnt_sire_allele == prnt_dame_allele:
+            return 0 if rand() < 0.5 else 1
+        elif child_allele == prnt_sire_allele:
+            return 0
+        elif child_allele == prnt_dame_allele:
+            return 1
+        else: 
+            msg  = 'UAI._ovserve_seg_var: child_allele ({}) cannot have a value '
+            msg += 'that is different than both parents ({},{})'
+            raise ValueError(msg.format(child_allele, prnt_sire_allele, prnt_dame_allele))
+
 
         
 if __name__ == '__main__':

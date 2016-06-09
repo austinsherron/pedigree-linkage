@@ -1,6 +1,6 @@
 ---------------- Statistics for the last historical generation -----------------
 Scaled QTL mean (var)       :     0.00000 (0.2)
-QTL scale factor            :     1.38337
+QTL scale factor            :     1.82812
 Polygenic mean (var)        :     0.00000 (0)
 
                                   Overall      Chr1      Chr2      Chr3      Chr4      Chr5      Chr6      Chr7      Chr8      Chr9     Chr10     Chr11     Chr12     Chr13     Chr14     Chr15     Chr16     Chr17     Chr18     Chr19     Chr20     Chr21     Chr22     Chr23     Chr24     Chr25     Chr26     Chr27     Chr28     Chr29     Chr30
@@ -11,32 +11,32 @@ No. loci                    :       10050       335       335       335       33
 No. markers                 :        9990       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333       333
 No. QTL                     :          60         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2         2
 
-No. non-seg. loci           :          44         1         3         0         1         0         3         1         2         0         1         0         2         1         3         3         2         1         0         1         2         0         3         0         2         2         1         3         1         2         3
-No. non-seg. markers        :          40         1         3         0         1         0         3         1         2         0         1         0         2         1         3         3         1         1         0         1         1         0         2         0         2         2         1         3         1         2         2
-No. non-seg. QTL            :           4         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         1         0         0         0         1         0         1         0         0         0         0         0         0         0         1
+No. non-seg. loci           :        1178        30        34        33        40        36        32        45        38        38        49        38        34        42        41        38        40        38        44        43        55        36        31        37        44        35        44        35        41        43        44
+No. non-seg. markers        :        1177        30        34        33        40        36        32        44        38        38        49        38        34        42        41        38        40        38        44        43        55        36        31        37        44        35        44        35        41        43        44
+No. non-seg. QTL            :           1         0         0         0         0         0         0         1         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0         0
 
                                      male      female
 Density in total            :     3.35000     2.68000 per 1 cM
 Density for markers         :     3.33000     2.66400 per 1 cM
 Density for QTL             :     0.02000     0.01600 per 1 cM
 
-Average no. alleles         :     1.99811
+Average no. alleles         :     1.88647
 Maximum no. alleles         :           3
 Minimum no. alleles         :           1
 
-Average no. marker alleles  :     1.99600
+Average no. marker alleles  :     1.88218
 Maximum no. marker alleles  :           2
 Minimum no. marker alleles  :           1
 
-Average no. QTL alleles     :     2.35000
+Average no. QTL alleles     :     2.60000
 Maximum no. QTL alleles     :           3
 Minimum no. QTL alleles     :           1
 
 ------------------- Statistics for the historical population -------------------
 No. marker mutation events  :           0
 No. QTL mutation events     :           0
-No. paternal crossovers     :   6,002,091
-No. maternal crossovers     :   7,511,606
+No. paternal crossovers     :   5,998,874
+No. maternal crossovers     :   7,503,235
 
 Gen.       Size    No. males  No. females
 ------------------------------------------

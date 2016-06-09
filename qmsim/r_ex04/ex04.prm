@@ -30,7 +30,7 @@ begin_pop = "p1";
    begin_popoutput;
         allele_freq /gen 0;
         data;
-        genotype; ///snp_code;
+        genotype; 
    end_popoutput;
 end_pop;
 
@@ -44,10 +44,10 @@ begin_genome;
       nmloci = 333;           //Number of markers
       mpos   = rnd;           //Marker positions
       nma    = all 2;         //Number of marker alleles
-      maf    = eql;           //Marker allele frequencies
+      maf    = rnd;           //Marker allele frequencies
       nqloci =  2;            //Number of QTL
       qpos   = rnd;           //QTL positions
-      nqa    = rnd 2 3;     //Number of QTL alleles
+      nqa    = all 3;     //Number of QTL alleles
       qaf    = rnd;           //QTL allele frequencies
       qae    = rndg 0.4;      //QTL allele effects
    end_chr;
